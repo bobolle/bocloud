@@ -1,0 +1,2 @@
+#!/bin/bash
+uwsgi --http :9090 --plugin python --wsgi-file server.py --callable master --master
