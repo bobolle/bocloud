@@ -3,12 +3,16 @@ def master(env, sr):
     request = env['REQUEST_METHOD']
     data = env['wsgi.input'].read()
 
-    #print(env)
+    print(env)
     #print(data)
 
     # GET
     if request == 'GET':
-        return response(sr, '200 OK')
+        if env['PATH_INFO'] == '/':
+            return response(sr, '200 OK', None, b'index')
+        else:
+            return response(sr, '404 Not Found', None, b'404 Not Found')
+        #return response(sr, '200 OK')
 
     # PUT 
     if request == 'PUT':
@@ -18,7 +22,7 @@ def master(env, sr):
     if request == 'POST':
         return response(sr, '200 OK')
 
-    return response(sr, '404 Not Found')
+    return response(sr, '404 Not Found', None, b'404 Not Found')
 
 def response(start_response, status_code, headers=None, body=b''):
     if headers is None:
