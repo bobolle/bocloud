@@ -1,8 +1,11 @@
 https://flask.palletsprojects.com/en/stable/deploying/uwsgi/
 
-skicka http req med curl
-curl -X GET -d test http:/localhost:9090/asdf
+## test cloud for iot-hub
 
-bygga en simpel in memory key-value store?
+lazy cloud for managing iot-hub, storing data and make analyses.
 
-- spara data i nvram vid crash?
+TODO:
+- [x] working connection from fog
+- [ ] implement docker-compsose config with postgresql
+- [ ] handle connections
+- [ ] send back commands to fog
