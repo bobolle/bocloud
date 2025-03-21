@@ -1,5 +1,8 @@
 import json
 
+# lazy temp file for storing data from session
+temp_json_data = [];
+
 def master(env, sr):
     path = env['PATH_INFO']
     request = env['REQUEST_METHOD']
@@ -7,11 +10,15 @@ def master(env, sr):
 
     #print(env)
     #print(data)
-
+    
     # GET
     if request == 'GET':
-        if env['PATH_INFO'] == '/':
+        if path == '/':
             return response(sr, '200 OK', None, b'index')
+
+        if path == '/temp':
+            return response(sr, '200 OK', [('Content-Type', 'application/json'), ('Refresh', '5')], json.dumps(temp_json_data).encode('utf-8'))
+
         else:
             return response(sr, '404 Not Found', None, b'404 Not Found')
 
@@ -21,9 +28,11 @@ def master(env, sr):
 
     # POST
     if request == 'POST':
-        if env['PATH_INFO'] == '/api/data':
+        if path == '/api/data':
             json_data = json.loads(data.decode())
+            temp_json_data.append(json_data)
             return response(sr, '200 OK')
+
         else:
             return response(sr, '404 Not Found', None, b'404 Not Found')
 
