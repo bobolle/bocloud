@@ -18,7 +18,7 @@ def master(env, sr):
             return response(sr, '200 OK', None, 'base.html', b'index/home')
 
         if path == '/temp':
-            return response(sr, '200 OK', None, 'base.html', json.dumps(temp_json_data).encode('utf-8'))
+            return response(sr, '200 OK', None, 'table.html', json.dumps(temp_json_data).encode('utf-8'))
 
         else:
             return response(sr, '404 Not Found', None, 'base.html', b'404 Not Found')
@@ -52,15 +52,21 @@ def response(start_response, status_code, headers=None, template_name=None, body
             with open(template_path, 'r') as template_file:
                 template = template_file.read()
         except FileNotFoundError:
-            start_response('404 Not Found' [('Content-Type', 'text/plain')])
+            start_response('404 Not Found', [('Content-Type', 'text/plain')])
             return [b'Template not found.']
 
     start_response(status_code, headers)
 
     if template:
-        body_content = body.decode('utf-8')
-        if '<body>' in template and '</body>' in template:
-            template = template.replace('<body>', f'<body>{body_content}')
+        #body_content = body.decode('utf-8')
+        #if '<body>' in template and '</body>' in template:
+        #    template = template.replace('<body>', f'<body>{body_content}')
+        if template_name == 'table.html':
+            if '<jsondata>' in template:
+                table_data = ''
+                for d in temp_json_data:
+                    table_data += '<tr><td>device</td><td>test</td><tr>'
+                template = template.replace('<jsondata>', table_data)
 
         headers.append(('Content-Length', str(len(template))))
         return [template.encode('utf-8')]
