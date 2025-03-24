@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>BoCloud</title>
+        <link rel="stylesheet" type="text/css" href="base.css">
+    </head>
+    <body>
+        <table id='table-test'>
+            <tr>
+                <th>device</th>
+                <th>data</th>
+            </tr>
+            <jsondata>
+        </table>
+    </body>
+        <script>
+            let tableElement = document.getElementById('table-test')
+            tableElement.style.left = localStorage.getItem("tposX");
+            tableElement.style.top = localStorage.getItem("tposY");
+
+            tableElement.addEventListener('mousedown', function(event) {
+                event.preventDefault();
+                let initX = event.clientX;
+                let initY = event.clientY;
+                function moveElement(event) {
+                    let currentX = event.clientX;
+                    let currentY = event.clientY;
+                    let deltaX = currentX - initX;
+                    let deltaY = currentY - initY;
+                    tableElement.style.left = tableElement.offsetLeft + deltaX + 'px';
+                    tableElement.style.top = tableElement.offsetTop + deltaY + 'px';
+                    initX = currentX;
+                    initY = currentY;
+                }
+
+                function stopElement(event) {
+                    localStorage.setItem('tposX', tableElement.style.left);
+                    localStorage.setItem('tposY', tableElement.style.top);
+                    document.removeEventListener('mousemove', moveElement);
+                    document.removeEventListener('mouseup', stopElement);
+                }
+
+                document.addEventListener('mousemove', moveElement);
+                document.addEventListener('mouseup', stopElement);
+
+            })
+        </script>
+</html>
