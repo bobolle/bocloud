@@ -2,3 +2,15 @@
     background-color:   #121212;
     color:              #EEEEEE;
 }
+
+table, th, td {
+    border: 1px solid #EEEEEE;
+}
+
+table {
+    position: absolute;
+}
+
+th {
+    padding: 2px;
+}
