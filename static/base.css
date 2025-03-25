@@ -4,14 +4,41 @@
 }
 
 table, th, td {
-    border: 1px solid #EEEEEE;
+    border-collapse: collapse;
 }
 
 table {
+    border: 1px solid #333333;
+    display: block;
     position: absolute;
-    background-color: #262626;
+    overflow: hidden;
+    overflow-y: scroll;
+    height: 350px;
+    background-color: #202020;
+}
+
+table:hover {
+    border: 1px solid #999999;
+}
+
+table::-webkit-scrollbar {
+    width: 8px;
+    background: transparent;
+}
+
+table::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background: rgba(255,255,255,.3);
 }
 
 th {
     padding: 2px;
+    border: 1px solid #777777;
+    background-color: #555555;
+}
+
+td {
+    padding: 2px;
+    border: 1px solid #777777;
+    background-color: #202020;
 }
