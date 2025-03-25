@@ -9,6 +9,7 @@ table, th, td {
 
 table {
     position: absolute;
+    background-color: #262626;
 }
 
 th {
