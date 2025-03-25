@@ -22,13 +22,8 @@ table:hover {
 }
 
 table::-webkit-scrollbar {
-    width: 8px;
-    background: transparent;
-}
-
-table::-webkit-scrollbar-thumb {
-    border-radius: 5px;
-    background: rgba(255,255,255,.3);
+    display: hidden;
+    width: 0px;
 }
 
 th {
