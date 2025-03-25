@@ -9,3 +9,8 @@ TODO:
 - [ ] implement docker-compsose config with postgresql
 - [ ] handle connections
 - [ ] send back commands to fog
+- [ ] move js to seperate file
+- [ ] refactor everything lol
+- [ ] option for creating new table per device
+- [ ] resize tables
+
