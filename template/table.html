@@ -40,20 +40,18 @@
             tableElement.style.left = localStorage.getItem("tposX");
             tableElement.style.top = localStorage.getItem("tposY");
 
-            let resize = false;
-
             tableElement.addEventListener('mousedown', function(event) {
                 event.preventDefault();
                 let initX = event.clientX;
                 let initY = event.clientY;
 
-
                 function moveElement(event) {
                     if (event.shiftKey) {
-                        var width = event.clientX - tableElement.offsetLeft;
+                        //var width = event.clientX - tableElement.offsetLeft;
                         var height = event.clientY - tableElement.offsetTop;
 
-                        tableElement.style.width = width + 'px';
+                        // think i just want to be able to edit height?
+                        //tableElement.style.width = width + 'px';
                         tableElement.style.height = height + 'px';
                     } else {
                         let currentX = event.clientX;
