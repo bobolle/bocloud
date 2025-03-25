@@ -40,24 +40,40 @@
             tableElement.style.left = localStorage.getItem("tposX");
             tableElement.style.top = localStorage.getItem("tposY");
 
+            let resize = false;
+
             tableElement.addEventListener('mousedown', function(event) {
                 event.preventDefault();
                 let initX = event.clientX;
                 let initY = event.clientY;
+
+
                 function moveElement(event) {
-                    let currentX = event.clientX;
-                    let currentY = event.clientY;
-                    let deltaX = currentX - initX;
-                    let deltaY = currentY - initY;
-                    tableElement.style.left = tableElement.offsetLeft + deltaX + 'px';
-                    tableElement.style.top = tableElement.offsetTop + deltaY + 'px';
-                    initX = currentX;
-                    initY = currentY;
+                    if (event.shiftKey) {
+                        var width = event.clientX - tableElement.offsetLeft;
+                        var height = event.clientY - tableElement.offsetTop;
+
+                        tableElement.style.width = width + 'px';
+                        tableElement.style.height = height + 'px';
+                    } else {
+                        let currentX = event.clientX;
+                        let currentY = event.clientY;
+                        let deltaX = currentX - initX;
+                        let deltaY = currentY - initY;
+
+
+                        tableElement.style.left = tableElement.offsetLeft + deltaX + 'px';
+                        tableElement.style.top = tableElement.offsetTop + deltaY + 'px';
+
+                        initX = currentX;
+                        initY = currentY;
+                    }
                 }
 
                 function stopElement(event) {
                     localStorage.setItem('tposX', tableElement.style.left);
                     localStorage.setItem('tposY', tableElement.style.top);
+
                     document.removeEventListener('mousemove', moveElement);
                     document.removeEventListener('mouseup', stopElement);
                 }
