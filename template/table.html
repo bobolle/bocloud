@@ -9,6 +9,7 @@
             <tr>
                 <th>device</th>
                 <th>data</th>
+                <th>timestamp</th>
             </tr>
             <jsondata>
         </table>
@@ -19,7 +20,6 @@
             var source = new EventSource('/stream')
             source.addEventListener('message', function(msg) {
                 var json_data = JSON.parse(msg.data)
-                console.log(json_data);
                 for (let i = 0; i < json_data.length; i++) {
                     var newTableTR = document.createElement('tr');
 
