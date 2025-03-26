@@ -1,5 +1,5 @@
 #!/bin/bash
-uwsgi --http :9090 --plugin python --wsgi-file server.py --callable master --master --check-static static/
+uwsgi --http :9090 --plugin python --wsgi-file src/server.py --callable master --master --check-static static/
 
 # if running some python packages
 #uwsgi --http :9090 --plugin python --wsgi-file server.py --callable master --master -H ./env
