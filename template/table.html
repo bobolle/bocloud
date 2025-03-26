@@ -5,6 +5,8 @@
         <link rel="stylesheet" type="text/css" href="base.css">
     </head>
     <body>
+        <button id='button-latest'>latest</button>
+        <button>freeze</button>
         <table id='table-test'>
             <tr>
                 <th>device</th>
@@ -32,53 +34,78 @@
                     }
 
                     tableElement.appendChild(newTableTR);
+                    if (latest) {
+                        newTableTR.scrollIntoView();
+                    }
                 }
             })
+
+            // control
+            let latest = false;
+            var buttonLatest = document.getElementById('button-latest')
+            buttonLatest.addEventListener('mousedown', function(event) {
+                if (event.buttons == 1) {
+                    latest = !latest;
+                }
+
+                if (latest) {
+                    buttonLatest.style.color = '#EEEEEE';
+                } else {
+                    buttonLatest.style.color = '#888888';
+                }
+
+            });
 
             // drag table
             var tableElement = document.getElementById('table-test')
             tableElement.style.left = localStorage.getItem("tposX");
             tableElement.style.top = localStorage.getItem("tposY");
+            tableElement.style.height = localStorage.getItem("tHeight");
 
             tableElement.addEventListener('mousedown', function(event) {
-                event.preventDefault();
-                let initX = event.clientX;
-                let initY = event.clientY;
+                if (event.buttons == 1) {
+                    event.preventDefault();
+                    let initX = event.clientX;
+                    let initY = event.clientY;
 
-                function moveElement(event) {
-                    if (event.shiftKey) {
-                        //var width = event.clientX - tableElement.offsetLeft;
-                        var height = event.clientY - tableElement.offsetTop;
+                    function moveElement(event) {
+                        if (event.shiftKey) {
+                            //var width = event.clientX - tableElement.offsetLeft;
+                            var height = event.clientY - tableElement.offsetTop;
+                            var step = ((height - 2) % 24);
+                            if ((step < 12) && (height >= 24)) {
+                                tableElement.style.height = (height - step) + 'px';
+                            }
 
-                        // think i just want to be able to edit height?
-                        //tableElement.style.width = width + 'px';
-                        tableElement.style.height = height + 'px';
-                    } else {
-                        let currentX = event.clientX;
-                        let currentY = event.clientY;
-                        let deltaX = currentX - initX;
-                        let deltaY = currentY - initY;
+                            // think i just want to be able to edit height?
+                            //tableElement.style.width = width + 'px';
+                        } else {
+                            let currentX = event.clientX;
+                            let currentY = event.clientY;
+                            let deltaX = currentX - initX;
+                            let deltaY = currentY - initY;
 
 
-                        tableElement.style.left = tableElement.offsetLeft + deltaX + 'px';
-                        tableElement.style.top = tableElement.offsetTop + deltaY + 'px';
+                            tableElement.style.left = tableElement.offsetLeft + deltaX + 'px';
+                            tableElement.style.top = tableElement.offsetTop + deltaY + 'px';
 
-                        initX = currentX;
-                        initY = currentY;
+                            initX = currentX;
+                            initY = currentY;
+                        }
                     }
+
+                    function stopElement(event) {
+                        localStorage.setItem('tposX', tableElement.style.left);
+                        localStorage.setItem('tposY', tableElement.style.top);
+                        localStorage.setItem('tHeight', tableElement.style.height);
+
+                        document.removeEventListener('mousemove', moveElement);
+                        document.removeEventListener('mouseup', stopElement);
+                    }
+
+                    document.addEventListener('mousemove', moveElement);
+                    document.addEventListener('mouseup', stopElement);
                 }
-
-                function stopElement(event) {
-                    localStorage.setItem('tposX', tableElement.style.left);
-                    localStorage.setItem('tposY', tableElement.style.top);
-
-                    document.removeEventListener('mousemove', moveElement);
-                    document.removeEventListener('mouseup', stopElement);
-                }
-
-                document.addEventListener('mousemove', moveElement);
-                document.addEventListener('mouseup', stopElement);
-
             })
         </script>
 </html>
