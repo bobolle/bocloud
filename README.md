@@ -1,6 +1,4 @@
-https://flask.palletsprojects.com/en/stable/deploying/uwsgi/
-
-## test cloud for iot-hub
+# test cloud for iot-hub
 
 lazy cloud for managing iot-hub, storing data and make analyses.
 
