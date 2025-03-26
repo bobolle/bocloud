@@ -70,8 +70,10 @@ def response(start_response, status_code, headers=None, template_name=None, body
     if headers is None:
         headers = [('Content-Type', 'text/html')]
 
-    templateHandler = BoTemplate(template_name)
-    template = templateHandler.get()
+    template = None
+    if template_name:
+        templateHandler = BoTemplate(template_name)
+        template = templateHandler.get()
 
     start_response(status_code, headers)
 
