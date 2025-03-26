@@ -2,23 +2,28 @@
     background-color:   #121212;
     color:              #EEEEEE;
 }
+::-webkit-scrollbar {
+    width: 8px;
+    background-color:   #121212;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+    background: #707070;
+}
 
 table, th, td {
-    border-collapse: collapse;
+    border-spacing: 0;
 }
 
 table {
-    border: 1px solid #333333;
+    max-height: 506px;
+    border: 1px solid #707070;
     display: block;
     position: absolute;
     overflow: hidden;
     overflow-y: scroll;
-    height: 350px;
     background-color: #202020;
-}
-
-table:hover {
-    border: 1px solid #999999;
 }
 
 table::-webkit-scrollbar {
@@ -27,13 +32,20 @@ table::-webkit-scrollbar {
 }
 
 th {
+    position: sticky;
+    top: 0;
     padding: 2px;
-    border: 1px solid #777777;
+    border: 1px solid #707070;
     background-color: #555555;
 }
 
 td {
     padding: 2px;
-    border: 1px solid #777777;
+    border: 1px solid #707070;
     background-color: #202020;
+}
+
+button {
+    color: #888888;
+    font-weight: bold;
 }
