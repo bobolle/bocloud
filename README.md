@@ -14,3 +14,4 @@ TODO:
 - [ ] option for creating new table per device
 - [ ] resize tables
 
+![](https://i.imgur.com/0TR54os.png)
