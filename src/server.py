@@ -6,27 +6,27 @@ import sys
 sys.path.append(os.path.abspath('src'))
 from template import BoTemplate 
 
-# lazy temp file for storing data from session
-temp_json_data = []
-temp_last_index_sent = 0
+#component_all_data = [['ALL', [{"device_id": "pico_w", "data": 10}, {"device_id": "pico_w", "data": 20}]]]
+component_all_data = []
+component_all_index = 0
 
 def master(env, sr):
-    global temp_last_index_sent
+    global component_all_index
     path = env['PATH_INFO']
     request = env['REQUEST_METHOD']
     data = env['wsgi.input'].read()
 
-    #print(env)
-    #print(data)
-    
     # GET
     if request == 'GET':
         if path == '/':
-            return response(sr, '200 OK', None, 'base.html', b'index/home')
+            return response(sr, '200 OK', None, 'base.html')
 
-        if path == '/temp':
-            temp_last_index_sent = len(temp_json_data)
-            return response(sr, '200 OK', None, 'table.html', json.dumps(temp_json_data).encode('utf-8'))
+        if path == '/monitor':
+            # get some data for components
+            # 'component' [{}]
+            if component_all_data:
+                component_all_index = len(component_all_data[0][1])
+            return response(sr, '200 OK', None, 'monitor.html', component_all_data)
         
         if path == '/stream':
             headers = [('Content-Type', 'text/event-stream')]
@@ -34,48 +34,56 @@ def master(env, sr):
             headers.append(('Connection', 'keep-alive'))
 
             sr('200 OK', headers)
-            if len(temp_json_data) > temp_last_index_sent:
-                new_last_index = len(temp_json_data)
-                sliced_data = temp_json_data[temp_last_index_sent:new_last_index]
-                payload = json.dumps(sliced_data)
 
-                temp_last_index_sent = new_last_index
+            # budget way of streaming data, cba doing anything better until i store component data better
+            if component_all_data:
+                if (len(component_all_data[0][1])) > component_all_index:
+                    sliced_data = component_all_data[0][1][component_all_index:len(component_all_data[0][1])]
+                    payload = json.dumps(sliced_data)
+                    component_all_index = len(component_all_data[0][1])
 
-                return bytes(f'data: {payload}\n\n', 'utf-8')
-            else:
-                return b''
+                    return bytes(f'data: {payload}\n\n', 'utf-8')
+            return b''
 
-
-        else:
-            return response(sr, '404 Not Found', None, 'base.html', b'404 Not Found')
+        return response(sr, '404 Not Found', None, 'base.html')
 
     # PUT 
     if request == 'PUT':
-        return response(sr, '404 Not Found', None, 'base.html', b'404 Not Found')
+        return response(sr, '404 Not Found', None, 'base.html')
 
     # POST
     if request == 'POST':
         if path == '/api/data':
             json_data = json.loads(data.decode())
-            print(json_data)
-            temp_json_data.append(json_data)
+            if component_all_data:
+                for component in component_all_data:
+                    component[1].append(json_data)
+            else:
+                component_all_data.append(['ALL', [json_data]])
             return response(sr, '200 OK')
 
-        else:
-            return response(sr, '404 Not Found', None, 'base.html', b'404 Not Found')
+        return response(sr, '404 Not Found', None, 'base.html')
 
-    return response(sr, '404 Not Found', None, 'base.html', b'404 Not Found')
+    return response(sr, '404 Not Found', None, 'base.html')
 
-def response(start_response, status_code, headers=None, template_name=None, body=b''):
+def response(start_response, status_code, headers=None, template_name=None, data=None, body=b''):
     if headers is None:
         headers = [('Content-Type', 'text/html')]
 
     template = None
     if template_name:
         templateHandler = BoTemplate(template_name)
+        templateHandler.parse()
+        if data:
+            templateHandler.add_data(data)
+
         template = templateHandler.get()
+        headers.append(('Content-Length', str(len(template))))
+        start_response(status_code, headers)
 
-    start_response(status_code, headers)
+        return [template]
 
-    headers.append(('Content-Length', str(len(template))))
-    return [template]
+    else:
+        start_response(status_code, headers)
+        headers.append(('Content-Length', str(len(body))))
+        return [body]
