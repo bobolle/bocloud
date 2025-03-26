@@ -1,6 +1,10 @@
 import json
 import time
 import os
+import sys
+
+sys.path.append(os.path.abspath('src'))
+from template import BoTemplate 
 
 # lazy temp file for storing data from session
 temp_json_data = []
@@ -63,46 +67,13 @@ def master(env, sr):
     return response(sr, '404 Not Found', None, 'base.html', b'404 Not Found')
 
 def response(start_response, status_code, headers=None, template_name=None, body=b''):
-    template = None
-
     if headers is None:
         headers = [('Content-Type', 'text/html')]
 
-    if template_name:
-        template_path = os.path.join('template', template_name)
-
-        try:
-            with open(template_path, 'r') as template_file:
-                template = template_file.read()
-        except FileNotFoundError:
-            start_response('404 Not Found', [('Content-Type', 'text/plain')])
-            return [b'Template not found.']
+    templateHandler = BoTemplate(template_name)
+    template = templateHandler.get()
 
     start_response(status_code, headers)
 
-    if template:
-        if body:
-            body_content = body.decode('utf-8')
-            if '<bodycontent>' in template:
-                template = template.replace('<bodycontent>', f'<body>{body_content}</body>')
-
-        if template_name == 'table.html':
-            if '<jsondata>' in template:
-                table_data = ''
-                if temp_json_data:
-                    for obj in temp_json_data:
-                        table_data += '<tr>'
-                        for key, value in obj.items():
-                            table_data += f'<td>{value}</td>'
-                        table_data += '</tr>'
-                    template = template.replace('<jsondata>', table_data)
-                else:
-                    template = template.replace('<jsondata>', '')
-
-
-        headers.append(('Content-Length', str(len(template))))
-        return [template.encode('utf-8')]
-
-    else:
-        headers.append(('Content-Length', str(len(body))))
-        return [body]
+    headers.append(('Content-Length', str(len(template))))
+    return [template]
