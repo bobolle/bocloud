@@ -50,6 +50,11 @@
                 }
             });
 
+            source.addEventListener('error', function(msg) {
+                console.log(msg)
+                source.close();
+            });
+
             // control
             let latest = true;
             var buttonLatest = document.getElementById('button-latest')

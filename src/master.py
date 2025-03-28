@@ -35,16 +35,8 @@ def master(env, sr):
 
             sr('200 OK', headers)
 
-            # budget way of streaming data, cba doing anything better until i store component data better
-            # stream is reopened after 3 sec by default
-            # future change would be to async keep streaming data without closing the connection
-            if component_all_data:
-                if (len(component_all_data[0][1])) > component_all_index:
-                    sliced_data = component_all_data[0][1][component_all_index:len(component_all_data[0][1])]
-                    payload = json.dumps(sliced_data)
-                    component_all_index = len(component_all_data[0][1])
+            # will be offloaded
 
-                    return bytes(f'data: {payload}\nretry: 1000\n\n', 'utf-8')
             return b''
 
         return response(sr, '404 Not Found', None, 'base.html')
@@ -91,6 +83,6 @@ def response(start_response, status_code, headers=None, template_name=None, data
         return [template]
 
     else:
-        start_response(status_code, headers)
         headers.append(('Content-Length', str(len(body))))
+        start_response(status_code, headers)
         return [body]
