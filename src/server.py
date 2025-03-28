@@ -61,8 +61,7 @@ def master(env, sr):
             # I will have refactor/recreate this
             json_data = json.loads(data.decode())
             if component_all_data:
-                for component in component_all_data:
-                    component[1].append(json_data)
+                component_all_data[0][1].append(json_data)
             else:
                 component_all_data.append(['ALL', [json_data]])
             return response(sr, '200 OK')
