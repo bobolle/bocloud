@@ -1,3 +1,4 @@
+import psycopg2
 import json
 import time
 import os
@@ -5,13 +6,21 @@ import sys
 
 sys.path.append(os.path.abspath('src'))
 from template import BoTemplate 
+from database import createDevice  
 
-#component_all_data = [['ALL', [{"device_id": "pico_w", "data": 10}, {"device_id": "pico_w", "data": 20}]]]
-component_all_data = []
-component_all_index = 0
+
+try:
+    conn = psycopg2.connect()
+    print('connected to db')
+except Exception as e:
+    print(e)
+#finally:
+#    if conn:
+#        conn.close()
+#        print('db connection closed')
+
 
 def master(env, sr):
-    global component_all_index
     path = env['PATH_INFO']
     request = env['REQUEST_METHOD']
     data = env['wsgi.input'].read()
@@ -19,20 +28,20 @@ def master(env, sr):
     # GET
     if request == 'GET':
         if path == '/':
+            try:
+                createDevice('01', 'temperature')
+            except Exception as e:
+                print(e)
             return response(sr, '200 OK', None, 'base.html')
 
         if path == '/monitor':
-            # get some data for components
-            # 'component' [{}]
-            if component_all_data:
-                component_all_index = len(component_all_data[0][1])
-            return response(sr, '200 OK', None, 'monitor.html', component_all_data)
+            return response(sr, '200 OK', None, 'monitor.html')
         
         if path == '/stream':
+            # will be routed to offload
             headers = [('Content-Type', 'text/event-stream')]
             sr('200 OK', headers)
 
-            # will be routed to offload
             return b''
 
         return response(sr, '404 Not Found', None, 'base.html')
@@ -44,14 +53,6 @@ def master(env, sr):
     # POST
     if request == 'POST':
         if path == '/api/data':
-            # right now the only things we're doing is storing in a global variable
-            # should be stored in a db but right now im too lazy
-            # I will have refactor/recreate this
-            json_data = json.loads(data.decode())
-            if component_all_data:
-                component_all_data[0][1].append(json_data)
-            else:
-                component_all_data.append(['ALL', [json_data]])
             return response(sr, '200 OK')
 
         return response(sr, '404 Not Found', None, 'base.html')
