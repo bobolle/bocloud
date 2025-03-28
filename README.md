@@ -22,7 +22,7 @@ The goal is to create a lightweight cloud I can use for my other projects and to
 - [ ] implement docker-compsose config with postgresql
 - [ ] handle connections
 - [ ] send back commands to fog
-- [ ] move js to seperate file
+- [x] move js to seperate file
 - [ ] refactor everything lol
 - [x] option for creating new table per device
 - [x] resize tables
