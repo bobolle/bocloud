@@ -36,6 +36,8 @@ def master(env, sr):
             sr('200 OK', headers)
 
             # budget way of streaming data, cba doing anything better until i store component data better
+            # stream is reopened after 3 sec by default
+            # future change would be to async keep streaming data without closing the connection
             if component_all_data:
                 if (len(component_all_data[0][1])) > component_all_index:
                     sliced_data = component_all_data[0][1][component_all_index:len(component_all_data[0][1])]
@@ -54,6 +56,9 @@ def master(env, sr):
     # POST
     if request == 'POST':
         if path == '/api/data':
+            # right now the only things we're doing is storing in a global variable
+            # should be stored in a db but right now im too lazy
+            # I will have refactor/recreate this
             json_data = json.loads(data.decode())
             if component_all_data:
                 for component in component_all_data:
@@ -67,6 +72,9 @@ def master(env, sr):
     return response(sr, '404 Not Found', None, 'base.html')
 
 def response(start_response, status_code, headers=None, template_name=None, data=None, body=b''):
+    # handle status code, headers, template, data and content
+    # working pretty well as it is right now
+
     if headers is None:
         headers = [('Content-Type', 'text/html')]
 
