@@ -44,7 +44,7 @@ def master(env, sr):
                     payload = json.dumps(sliced_data)
                     component_all_index = len(component_all_data[0][1])
 
-                    return bytes(f'data: {payload}\n\n', 'utf-8')
+                    return bytes(f'data: {payload}\nretry: 1000\n\n', 'utf-8')
             return b''
 
         return response(sr, '404 Not Found', None, 'base.html')
