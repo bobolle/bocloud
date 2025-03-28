@@ -30,6 +30,7 @@ The goal is to create a lightweight cloud I can use for my other projects and to
 ## start
 ```
 ./master
+./offload
 ```
 
 ![](https://i.imgur.com/TXxBmFx.png)
