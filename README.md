@@ -9,7 +9,7 @@ TODO:
 - [ ] send back commands to fog
 - [ ] move js to seperate file
 - [ ] refactor everything lol
-- [ ] option for creating new table per device
-- [ ] resize tables
+- [x] option for creating new table per device
+- [x] resize tables
 
-![](https://i.imgur.com/0TR54os.png)
+![](https://i.imgur.com/TXxBmFx.png)
