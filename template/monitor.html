@@ -27,7 +27,7 @@
         <script>
 
             // sse
-            var source = new EventSource('/stream')
+            var source = new EventSource('/stream');
             var tableAll = document.getElementById('table-all');
 
             source.addEventListener('message', function(msg) {
@@ -48,7 +48,7 @@
                         newTableTR.scrollIntoView();
                     }
                 }
-            })
+            });
 
             // control
             let latest = true;
