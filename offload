@@ -1,0 +1,2 @@
+#!/bin/bash
+uwsgi --ini offload.ini --plugin python --callable sse --async 10 --ugreen
