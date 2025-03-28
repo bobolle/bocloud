@@ -29,6 +29,7 @@
             // sse
             var source = new EventSource('/stream')
             var tableAll = document.getElementById('table-all');
+
             source.addEventListener('message', function(msg) {
                 var json_data = JSON.parse(msg.data);
                 for (let i = 0; i < json_data.length; i++) {
@@ -50,7 +51,7 @@
             })
 
             // control
-            let latest = false;
+            let latest = true;
             var buttonLatest = document.getElementById('button-latest')
             buttonLatest.addEventListener('mousedown', function(event) {
                 if (event.buttons == 1) {
