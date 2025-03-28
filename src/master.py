@@ -30,13 +30,9 @@ def master(env, sr):
         
         if path == '/stream':
             headers = [('Content-Type', 'text/event-stream')]
-            headers.append(('Cache-Control', 'no-cache'))
-            headers.append(('Connection', 'keep-alive'))
-
             sr('200 OK', headers)
 
-            # will be offloaded
-
+            # will be routed to offload
             return b''
 
         return response(sr, '404 Not Found', None, 'base.html')
