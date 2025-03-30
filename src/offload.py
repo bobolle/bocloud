@@ -20,6 +20,10 @@ def stream(env, sr):
             # last read index
             index = env.get('stream-index')
 
+            # create table for connections
+            # create custom events
+            # device connect
+            # device disconnect
             yield b'data: [{"device_id": "pico_w", "data": 30}]\n\n'
             time.sleep(1)
     finally:
