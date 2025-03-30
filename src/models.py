@@ -1,15 +1,45 @@
-import datetime
-import sqlalchemy as db
+from typing import List
+from sqlalchemy import Column, String, Integer, ForeignKey, Float, DateTime
+from sqlalchemy.orm import DeclarativeBase, Mapped, relationship
 
-class Device():
+class Base(DeclarativeBase):
+    pass
+
+class Device(Base):
     __tablename__ = "Device"
-    device_guid = db.Column(db.Integer, primary_key=True)
-    device_type = db.Column(db.String)
-    
-class Sensor():
-    __tablename__ = "Sensor"
-    sensor_guid = db.Column(db.Integer, primary_key=True)
-    device_guid = db.Column(db.String, db.ForeignKey('Device.device_guid'))
 
-    value = db.Column(db.Float)
-    timestamp = db.Column(db.DateTime, default=datetime.datetime.now().time())
+    device_id = Column(Integer, primary_key=True)
+    device_name = Column(String)
+    sensors: Mapped[List["Sensor"]] = relationship(
+            back_populates="device", cascade="all, delete-orphan"
+    )
+
+    def __repr__(self):
+        return f"Device(device_id={self.device_id!r}, device_name={self.device_name!r})"
+    
+class Sensor(Base):
+    __tablename__ = "Sensor"
+
+    sensor_id = Column(Integer, primary_key=True)
+    sensor_type = Column(String)
+
+    device_id = Column(Integer, ForeignKey('Device.device_id'))
+    device : Mapped["Device"] = relationship(back_populates="sensors")
+
+    reads: Mapped[List["Read"]] = relationship(back_populates="sensor", cascade="all, delete-orphan")
+
+    def __repr__(self) -> str:
+        return f"Sensor(sensor_id={self.sensor_id!r}, sensor_type={self.sensor_type!r}, device={self.device!r})"
+
+class Read(Base):
+    __tablename__ = "SensorData"
+
+    read_id = Column(Integer, primary_key=True)
+    value = Column(String)
+    timestamp = Column(DateTime)
+
+    sensor_id = Column(Integer, ForeignKey('Sensor.sensor_id'))
+    sensor: Mapped["Sensor"] = relationship(back_populates="reads")
+
+    def __repr__(self) -> str:
+        return f"Read(read_id={self.read_id!r}, value={self.value!r}, timestamp={self.timestamp!r, sensor={self.sensor!r}})"

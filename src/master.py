@@ -6,18 +6,7 @@ import sys
 
 sys.path.append(os.path.abspath('src'))
 from template import BoTemplate 
-from database import createDevice  
-
-
-try:
-    conn = psycopg2.connect()
-    print('connected to db')
-except Exception as e:
-    print(e)
-#finally:
-#    if conn:
-#        conn.close()
-#        print('db connection closed')
+from database import *
 
 
 def master(env, sr):
@@ -28,10 +17,6 @@ def master(env, sr):
     # GET
     if request == 'GET':
         if path == '/':
-            try:
-                createDevice('01', 'temperature')
-            except Exception as e:
-                print(e)
             return response(sr, '200 OK', None, 'base.html')
 
         if path == '/monitor':
