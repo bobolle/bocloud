@@ -42,4 +42,4 @@ class Read(Base):
     sensor: Mapped["Sensor"] = relationship(back_populates="reads")
 
     def __repr__(self) -> str:
-        return f"Read(read_id={self.read_id!r}, value={self.value!r}, timestamp={self.timestamp!r, sensor={self.sensor!r}})"
+        return f"Read(read_id={self.read_id!r}, value={self.value!r}, timestamp={self.timestamp!r}, sensor={self.sensor!r})"
