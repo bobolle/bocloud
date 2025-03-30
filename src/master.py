@@ -8,7 +8,6 @@ sys.path.append(os.path.abspath('src'))
 from template import BoTemplate 
 from database import *
 
-
 def master(env, sr):
     path = env['PATH_INFO']
     request = env['REQUEST_METHOD']
@@ -42,16 +41,14 @@ def master(env, sr):
         if path == '/api/data':
             json_data = json.loads(data.decode())
 
-            # parse the data
-            # how should the payload look like?
             # {
             # "device_id": "pico_w_test",
             # "sensors": {
             #     "moist": 37,
             #     "light": 368
             # }
-            # "timestamp: 20XX:XX:XX
             #}
+
             try: 
                 device_name = json_data['device_id']
                 sensors = json_data['sensors']
@@ -70,7 +67,6 @@ def master(env, sr):
                             session.add(new_sensor)
                             session.add(new_read)
 
-
                         session.add(new_device)
                         session.commit()
 
@@ -88,17 +84,6 @@ def master(env, sr):
             except Exception as e:
                 print(e)
 
-
-            
-            #for sensor in sensors:
-            #    createSensor(sensor, device_name)
-
-            # insert read with value 37 and timestamp 20XX
-            # insert read with value 368 and timestamp 20XX
-            
-            # insert to db
-            
-
             return response(sr, '200 OK')
 
         return response(sr, '404 Not Found', None, 'base.html')
@@ -106,9 +91,6 @@ def master(env, sr):
     return response(sr, '404 Not Found', None, 'base.html')
 
 def response(start_response, status_code, headers=None, template_name=None, data=None, body=b''):
-    # handle status code, headers, template, data and content
-    # working pretty well as it is right now
-
     if headers is None:
         headers = [('Content-Type', 'text/html')]
 

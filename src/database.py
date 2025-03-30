@@ -8,8 +8,8 @@ engine = db.create_engine('postgresql+psycopg2://db_user:1234@localhost/db')
 Base.metadata.create_all(engine)
 
 def getDevice(session, device_name: str):
-        device = session.query(Device).filter(Device.device_name == device_name).first()
-        return device
+    device = session.query(Device).filter(Device.device_name == device_name).first()
+    return device
 
 def createDevice(session, device_name: str):
     new_device = Device(device_name=device_name)
