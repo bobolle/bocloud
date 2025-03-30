@@ -1,2 +1,2 @@
 #!/bin/bash
-curl -X POST http://localhost:9090/api/data -H 'Content-Type: application/json' -d '{"device_id": "pico", "waterlevel": 123123, "value-status": "OFF"}'
+curl -X POST http://localhost:9090/api/data -H 'Content-Type: application/json' -d '{"device_id": "pico_w", "sensors": {"moist": 37, "light": 101}}'
