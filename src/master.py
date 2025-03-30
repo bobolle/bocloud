@@ -1,4 +1,4 @@
-import psycopg2
+import uwsgi
 import json
 import time
 import os
@@ -24,6 +24,13 @@ def master(env, sr):
             return response(sr, '200 OK', None, 'monitor.html')
         
         if path == '/stream':
+            # get index of last read
+            with Session(engine) as session:
+                index = lastReadIndex(session)
+
+            # send as a headers
+            uwsgi.add_var('stream-index', bytes(f'{index.read_id}', 'utf-8'))
+
             # will be routed to offload
             headers = [('Content-Type', 'text/event-stream')]
             sr('200 OK', headers)

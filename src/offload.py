@@ -1,4 +1,10 @@
+import uwsgi
 import time
+import sys
+import os
+
+sys.path.append(os.path.abspath('src'))
+from database import *
 
 def stream(env, sr):
     headers = []
@@ -11,9 +17,9 @@ def stream(env, sr):
     # nothing to worry about if we exit from this instance
     try:
         while True:
-            # how to know what to query?
-            # fetch
-            # and yield back
+            # last read index
+            index = env.get('stream-index')
+
             yield b'data: [{"device_id": "pico_w", "data": 30}]\n\n'
             time.sleep(1)
     finally:

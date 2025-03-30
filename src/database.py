@@ -22,3 +22,7 @@ def createSensor(session, sensor_type: str):
 def createRead(session, value: int):
     new_read = Read(value=value)
     return new_read
+
+def lastReadIndex(session):
+    index = session.query(Read).order_by(Read.read_id.desc()).first()
+    return index
