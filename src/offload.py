@@ -11,6 +11,9 @@ def stream(env, sr):
     # nothing to worry about if we exit from this instance
     try:
         while True:
+            # how to know what to query?
+            # fetch
+            # and yield back
             yield b'data: [{"device_id": "pico_w", "data": 30}]\n\n'
             time.sleep(1)
     finally:

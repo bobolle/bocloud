@@ -20,6 +20,8 @@ def master(env, sr):
             return response(sr, '200 OK', None, 'base.html')
 
         if path == '/monitor':
+            # how to know what to query?
+            # fetch data
             return response(sr, '200 OK', None, 'monitor.html')
         
         if path == '/stream':
@@ -38,6 +40,65 @@ def master(env, sr):
     # POST
     if request == 'POST':
         if path == '/api/data':
+            json_data = json.loads(data.decode())
+
+            # parse the data
+            # how should the payload look like?
+            # {
+            # "device_id": "pico_w_test",
+            # "sensors": {
+            #     "moist": 37,
+            #     "light": 368
+            # }
+            # "timestamp: 20XX:XX:XX
+            #}
+            try: 
+                device_name = json_data['device_id']
+                sensors = json_data['sensors']
+
+                with Session(engine) as session:
+                    if not getDevice(session, device_name):
+                        new_device = createDevice(session, device_name)
+
+                        for sensor, value in sensors.items():
+                            new_sensor = createSensor(session, sensor)
+                            new_read = createRead(session, value)
+
+                            new_device.sensors.append(new_sensor)
+                            new_sensor.reads.append(new_read)
+
+                            session.add(new_sensor)
+                            session.add(new_read)
+
+
+                        session.add(new_device)
+                        session.commit()
+
+                    else:
+                        device = getDevice(session, device_name)
+                        for device_sensor in device.sensors:
+                            for sensor, value in sensors.items():
+                                if device_sensor.sensor_type == sensor:
+                                    new_read = createRead(session, value)
+                                    device_sensor.reads.append(new_read)
+                                    session.add(new_read)
+
+                        session.commit()
+
+            except Exception as e:
+                print(e)
+
+
+            
+            #for sensor in sensors:
+            #    createSensor(sensor, device_name)
+
+            # insert read with value 37 and timestamp 20XX
+            # insert read with value 368 and timestamp 20XX
+            
+            # insert to db
+            
+
             return response(sr, '200 OK')
 
         return response(sr, '404 Not Found', None, 'base.html')

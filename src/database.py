@@ -2,57 +2,23 @@ import json
 import sqlalchemy as db
 from sqlalchemy.orm import Session
 
-from models import Device, Sensor, Base
+from models import Device, Sensor, Read, Base
 
 engine = db.create_engine('postgresql+psycopg2://db_user:1234@localhost/db')
 Base.metadata.create_all(engine)
 
-def getDevices():
-    with Session(engine) as session:
-        stmt = session.query(Device).all()
-        for device in stmt:
-            print(device)
-        session.close()
-        return stmt
+def getDevice(session, device_name: str):
+        device = session.query(Device).filter(Device.device_name == device_name).first()
+        return device
 
-def getSensors():
-    with Session(engine) as session:
-        stmt = session.query(Sensor).all()
-        for sensor in stmt:
-            print(sensor)
-        session.close()
-        return stmt
+def createDevice(session, device_name: str):
+    new_device = Device(device_name=device_name)
+    return new_device
 
-def getReads():
-    with Session(engine) as session:
-        stmt = session.query(Read).all()
-        for read in stmt:
-            print(read)
-        session.close()
-        return stmt
+def createSensor(session, sensor_type: str):
+    new_sensor = Sensor(sensor_type=sensor_type)
+    return new_sensor
 
-def createDevice(device_name: str):
-    with Session(engine) as session:
-        new_device = Device(device_name=device_name)
-        session.add(new_device)
-        session.commit()
-
-def createSensor(sensor_type: str, device_id: str):
-    with Session(engine) as session:
-        #get_device = session.query(Device).where(device_id == device_id)
-        new_sensor = Sensor(
-            sensor_type=sensor_type,
-            device_id=device_id
-        )
-        session.add(new_sensor)
-        session.commit()
-
-def createRead(value: str, timestamp: str, sensor_id: str):
-    with Session(engine) as session:
-        new_read = Read(
-            value=value,
-            timestamp=timestamp,
-            sensor_id=sensor_id
-        )
-        session.add(new_read)
-        session.commit()
+def createRead(session, value: int):
+    new_read = Read(value=value)
+    return new_read
