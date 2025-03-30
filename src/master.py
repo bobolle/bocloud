@@ -29,7 +29,10 @@ def master(env, sr):
                 index = lastReadIndex(session)
 
             # send as a headers
-            uwsgi.add_var('stream-index', bytes(f'{index.read_id}', 'utf-8'))
+            if index:
+                uwsgi.add_var('stream-index', bytes(f'{index.read_id}', 'utf-8'))
+            else:
+                uwsgi.add_var('stream-index', b'0')
 
             # will be routed to offload
             headers = [('Content-Type', 'text/event-stream')]
