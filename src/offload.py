@@ -4,6 +4,7 @@ import sys
 import os
 
 sys.path.append(os.path.abspath('src'))
+from sqlalchemy import event
 from database import *
 
 def stream(env, sr):
@@ -15,16 +16,23 @@ def stream(env, sr):
 
     # trying to yield to closed socket will make uwsgi throw an OSError: write error
     # nothing to worry about if we exit from this instance
-    try:
-        while True:
-            # last read index
-            index = env.get('stream-index')
 
-            # create table for connections
-            # create custom events
-            # device connect
-            # device disconnect
-            yield b'data: [{"device_id": "pico_w", "data": 30}]\n\n'
-            time.sleep(1)
+
+    try:
+        # last read index
+        index = env.get('stream-index')
+        with Session(engine) as session:
+            while True:
+                # starting with getting every read
+                new_read = session.query(Read).filter(Read.read_id > index).first()
+                if new_read:
+                    #print(f'data: {{"device": "{new_read.sensor.device.device_name}","sensor": "{new_read.sensor.sensor_type}","value": {new_read.value}}}')
+                    yield(bytes(f'data: {{"device": "{new_read.sensor.device.device_name}","sensor": "{new_read.sensor.sensor_type}","value": {new_read.value}}}\n\n', 'utf-8'))
+                    index = new_read.read_id
+                    new_read = None
+                else:
+                    time.sleep(1)
+                    continue
+
     finally:
         pass
