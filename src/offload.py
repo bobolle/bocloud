@@ -27,7 +27,7 @@ def stream(env, sr):
                 new_read = session.query(Read).filter(Read.read_id > index).first()
                 if new_read:
                     #print(f'data: {{"device": "{new_read.sensor.device.device_name}","sensor": "{new_read.sensor.sensor_type}","value": {new_read.value}}}')
-                    yield(bytes(f'data: {{"device": "{new_read.sensor.device.device_name}","sensor": "{new_read.sensor.sensor_type}","value": {new_read.value}}}\n\n', 'utf-8'))
+                    yield bytes(f'data: {{"device": "{new_read.sensor.device.device_name}","sensor": "{new_read.sensor.sensor_type}","value": {new_read.value}, "timestamp": "{new_read.timestamp}"}}\n\n', 'utf-8')
                     index = new_read.read_id
                     new_read = None
                 else:
