@@ -1,24 +1,24 @@
 var source = new EventSource('/stream');
-var tableAll = document.getElementById('table-all');
+var tableReads = document.getElementById('table-reads');
 
 source.addEventListener('message', function(msg) {
     var json_data = JSON.parse(msg.data);
-    for (let i = 0; i < json_data.length; i++) {
-        var newTableTR = document.createElement('tr');
-        var keys = Object.keys(json_data[i]);
 
-        for (let j = 0; j < keys.length; j++) {
-            var newTableTD = document.createElement('td');
-            var TDTextNode = document.createTextNode(json_data[i][keys[j]]);
+    var newTableTR = document.createElement('tr');
+    for (var key in json_data) {
 
-            newTableTD.appendChild(TDTextNode);
-            newTableTR.appendChild(newTableTD);
-        }
+        var newTableTD = document.createElement('td');
+        var TDTextNode = document.createTextNode(json_data[key]);
 
-        tableAll.appendChild(newTableTR);
-        if (latest) {
-            newTableTR.scrollIntoView();
-        }
+        newTableTD.appendChild(TDTextNode);
+        newTableTR.appendChild(newTableTD);
+
+    }
+
+    tableReads.appendChild(newTableTR);
+
+    if (latest) {
+        newTableTR.scrollIntoView();
     }
 });
 
