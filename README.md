@@ -18,7 +18,7 @@ The main idea was to let the user decide how the interface would look like. From
 
 The goal is to create a lightweight cloud I can use for my other projects and to learn more about the architecture of a cloud.
 
-### working but not finished functionality:
+### Working but not finished functionality:
 - handle requests and responses
 - routing
 - templates
@@ -43,7 +43,12 @@ The goal is to create a lightweight cloud I can use for my other projects and to
 - [ ] sessions
 - [ ] show previous reads before session in stream panel?
 
-## start
+## Build
+```
+#WIP
+```
+
+## Run
 ```
 ./master
 ./offload
