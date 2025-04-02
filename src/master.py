@@ -56,6 +56,7 @@ def master(env, sr):
                                 'timestamp': read.timestamp.isoformat()
                             })
 
+                    reads_data = sorted(reads_data, key=lambda x: x['read_id'])
                     response_data = {
                             'reads': reads_data
                     }
