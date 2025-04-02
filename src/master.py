@@ -40,6 +40,32 @@ def master(env, sr):
 
             return b''
 
+        if path == '/fetch':
+            device_name = env['QUERY_STRING']
+            
+            with Session(engine) as session:
+                device = session.query(Device).filter(Device.device_name == device_name).first()
+                if device:
+                    reads_data = []
+                    for sensor in device.sensors:
+                        for read in sensor.reads:
+                            reads_data.append({
+                                'read_id': read.read_id,
+                                'sensor_type': sensor.sensor_type,
+                                'value': read.value,
+                                'timestamp': read.timestamp.isoformat()
+                            })
+
+                    response_data = {
+                            'reads': reads_data
+                    }
+
+            headers = []
+            headers.append(('Content-Type', 'application/json'))
+            sr('200 OK', headers)
+
+            return json.dumps(response_data).encode('utf-8')
+
         return response(sr, '404 Not Found', None, 'base.html')
 
     # PUT 
@@ -64,15 +90,23 @@ def master(env, sr):
                 sensors = json_data['sensors']
 
                 with Session(engine) as session:
-                    if not getDevice(session, device_name):
+                    device = getDevice(session, device_name)
+                    # new device
+                    if not device:
+
+                        # new device
                         new_device = createDevice(session, device_name)
 
-                        for sensor, value in sensors.items():
-                            new_sensor = createSensor(session, sensor)
+                        for sensor_type, value in sensors.items():
+                            # create new sensor
+                            new_sensor = createSensor(session, sensor_type)
+                            # create new read
                             new_read = createRead(session, value)
 
-                            new_device.sensors.append(new_sensor)
+                            # append read to sensor
                             new_sensor.reads.append(new_read)
+                            # append sensor to device
+                            new_device.sensors.append(new_sensor)
 
                             session.add(new_sensor)
                             session.add(new_read)
@@ -80,13 +114,16 @@ def master(env, sr):
                         session.add(new_device)
                         session.commit()
 
+                    # device already exists
                     else:
-                        device = getDevice(session, device_name)
                         for device_sensor in device.sensors:
-                            for sensor, value in sensors.items():
-                                if device_sensor.sensor_type == sensor:
+                            for sensor_type, value in sensors.items():
+                                if device_sensor.sensor_type == sensor_type:
+                                    # create new read
                                     new_read = createRead(session, value)
+                                    # append read to sensor
                                     device_sensor.reads.append(new_read)
+
                                     session.add(new_read)
 
                         session.commit()

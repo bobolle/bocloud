@@ -1,6 +1,56 @@
 var source = new EventSource('/stream');
 var tableReads = document.getElementById('table-reads');
 
+// create new panel for specific device
+async function createPanel(deviceName) {
+    try {
+        const response = await fetch(`/fetch?${deviceName}`);
+        if (!response.ok) {
+            throw new Error('Bad reponse');
+        }
+
+        const json_data = await response.json();
+        reads = json_data.reads;
+
+        const newTable = document.createElement('table');
+
+        const titleTR = document.createElement('tr');
+
+        for (const read in reads[0]) {
+            const newTableTH = document.createElement('th');
+            const THTextNode = document.createTextNode(read);
+
+            newTableTH.appendChild(THTextNode);
+            titleTR.appendChild(newTableTH);
+        }
+        newTable.appendChild(titleTR);
+
+
+
+        for (const read in reads) {
+            const newTableTR = document.createElement('tr');
+            for (const key in reads[read]) {
+
+                const newTableTD = document.createElement('td');
+                const TDTextNode = document.createTextNode(reads[read][key]);
+
+                newTableTD.appendChild(TDTextNode);
+                newTableTR.appendChild(newTableTD);
+            }
+
+            newTable.appendChild(newTableTR);
+            document.body.appendChild(newTable);
+        }
+
+        
+
+
+    } catch (error) {
+        console.error('Error: ', error);
+    }
+}
+
+// create table rows
 source.addEventListener('message', function(msg) {
     var json_data = JSON.parse(msg.data);
 
