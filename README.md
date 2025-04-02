@@ -54,4 +54,4 @@ The goal is to create a lightweight cloud I can use for my other projects and to
 ./offload
 ```
 
-![](https://i.imgur.com/TXxBmFx.png)
+![](https://i.imgur.com/9TTiPXs.png)
