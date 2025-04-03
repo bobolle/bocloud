@@ -40,32 +40,45 @@ def master(env, sr):
 
             return b''
 
-        if path == '/fetch':
-            device_name = env['QUERY_STRING']
+        if path == '/fetch/device':
+            device_id = env['QUERY_STRING']
             
             with Session(engine) as session:
-                device = session.query(Device).filter(Device.device_name == device_name).first()
-                if device:
-                    reads_data = []
-                    for sensor in device.sensors:
-                        for read in sensor.reads:
-                            reads_data.append({
-                                'read_id': read.read_id,
-                                'sensor_type': sensor.sensor_type,
-                                'value': read.value,
-                                'timestamp': read.timestamp.isoformat()
-                            })
+                reads = session.query(Read).join(Sensor).filter(Sensor.device_id == device_id).all()
+                if reads:
+                    data = []
+                    for read in reads:
+                        data.append({
+                            'read_id': read.read_id,
+                            'value': read.value,
+                            'timestamp': read.timestamp.isoformat(),
+                            'sensor_type': read.sensor.sensor_type
 
-                    reads_data = sorted(reads_data, key=lambda x: x['read_id'])
-                    response_data = {
-                            'reads': reads_data
-                    }
+                        })
 
             headers = []
             headers.append(('Content-Type', 'application/json'))
             sr('200 OK', headers)
+            return json.dumps(data).encode('utf-8')
 
-            return json.dumps(response_data).encode('utf-8')
+        # fetch data from sensor
+        if path == '/fetch/sensor':
+            sensor_id = env['QUERY_STRING']
+            with Session(engine) as session:
+                reads = session.query(Read).filter(Read.sensor_id == sensor_id).all()
+                if reads:
+                    data = []
+                    for read in reads:
+                        data.append({
+                            'read_id': read.read_id,
+                            'value': read.value,
+                            'timestamp': read.timestamp.isoformat()
+                        })
+
+            headers = []
+            headers.append(('Content-Type', 'application/json'))
+            sr('200 OK', headers)
+            return json.dumps(data).encode('utf-8')
 
         return response(sr, '404 Not Found', None, 'base.html')
 

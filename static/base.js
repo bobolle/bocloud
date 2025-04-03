@@ -1,64 +1,59 @@
 const source = new EventSource('/stream');
 const tableReads = document.getElementById('table-reads');
 
+// fetch data from model
+async function fetchData(model, id, amount) {
+    const response = await fetch(`/fetch/${model}?${id}`);
+    return await response.json();
+}
+
 // create new panel for specific device
-async function createPanel(deviceName) {
-    try {
-        const response = await fetch(`/fetch?${deviceName}`);
-        if (!response.ok) {
-            throw new Error('Bad reponse');
-        }
+async function createPanel(model, id, title) {
+    data = await fetchData(model, id);
 
-        const json_data = await response.json();
-        reads = json_data.reads;
+    const newTable = document.createElement('table');
+    newTable.setAttribute('id', 'table-'+model+'-'+id);
+    initDragResize(newTable);
 
-        const newTable = document.createElement('table');
-        newTable.setAttribute('id', 'table-device-'+deviceName);
-        initDragResize(newTable);
+    const titleTR = document.createElement('tr');
+    const titleTH = document.createElement('th');
+    titleTH.innerHTML = title;
 
-        const titleTR = document.createElement('tr');
-        const titleTH = document.createElement('th');
-        titleTH.innerHTML = deviceName;
+    titleTR.className = 'tr-title';
+    titleTH.colSpan = data.length;
+    titleTR.appendChild(titleTH);
+    newTable.appendChild(titleTR);
 
-        titleTR.className = 'tr-title';
-        titleTH.colSpan = reads.length;
-        titleTR.appendChild(titleTH);
-        newTable.appendChild(titleTR);
-
-        const descTR = document.createElement('tr');
+    const descTR = document.createElement('tr');
+    for (const read in data[0]) {
         descTR.className = 'tr-desc';
 
-        for (const read in reads[0]) {
-            const newTableTH = document.createElement('th');
-            const THTextNode = document.createTextNode(read);
+        const newTableTH = document.createElement('th');
+        const THTextNode = document.createTextNode(read);
 
-            newTableTH.appendChild(THTextNode);
-            descTR.appendChild(newTableTH);
+        newTableTH.appendChild(THTextNode);
+        descTR.appendChild(newTableTH);
+    }
+
+    newTable.appendChild(descTR);
+
+    for (const read in data) {
+        const newTableTR = document.createElement('tr');
+        for (const key in data[read]) {
+
+            const newTableTD = document.createElement('td');
+            const TDTextNode = document.createTextNode(data[read][key]);
+
+            newTableTD.appendChild(TDTextNode);
+            newTableTR.appendChild(newTableTD);
         }
 
-        newTable.appendChild(descTR);
-
-        for (const read in reads) {
-            const newTableTR = document.createElement('tr');
-            for (const key in reads[read]) {
-
-                const newTableTD = document.createElement('td');
-                const TDTextNode = document.createTextNode(reads[read][key]);
-
-                newTableTD.appendChild(TDTextNode);
-                newTableTR.appendChild(newTableTD);
-            }
-
-            newTable.appendChild(newTableTR);
-            document.body.appendChild(newTable);
-        }
-    } catch (error) {
-        console.error('Error: ', error);
+        newTable.appendChild(newTableTR);
+      document.body.appendChild(newTable);
     }
 }
 
 // create table rows
-let openPanels = new Set();
 source.addEventListener('message', function(msg) {
     const json_data = JSON.parse(msg.data);
 
@@ -71,16 +66,21 @@ source.addEventListener('message', function(msg) {
         newTableTD.appendChild(TDTextNode);
         newTableTR.appendChild(newTableTD);
 
-        if (key == 'device') {
-            exist = document.getElementById('table-device-' + key);
+        if (key == 'device_id') {
             newTableTD.addEventListener('mousedown', function(event) {
-                if (event.buttons === 1 && !openPanels.has(json_data[key])) {
-                    const panel = createPanel(json_data[key]);
-                    openPanels.add(json_data[key]);
+                if (event.buttons === 1) {
+                    createPanel('device', json_data[key], json_data['device'] + ' ' + json_data['device_id']);
                 }
             });
         }
 
+        if (key == 'sensor_id') {
+            newTableTD.addEventListener('mousedown', function(event) {
+                if (event.buttons === 1) {
+                    createPanel('sensor', json_data[key], json_data['sensor_type'] + ' ' + json_data['sensor_id']);
+                }
+            });
+        }
     }
 
     tableReads.appendChild(newTableTR);
@@ -160,7 +160,6 @@ function initDragResize(element) {
     });
 }
 
-// drag table
 const tableElements = document.querySelectorAll('.table-dragable');
 tableElements.forEach(function(element) {
     initDragResize(element);
