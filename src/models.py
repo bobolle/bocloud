@@ -37,7 +37,7 @@ class Read(Base):
 
     read_id = Column(Integer, primary_key=True)
     value = Column(String)
-    timestamp = Column(DateTime, default=datetime.datetime.utcnow)
+    timestamp = Column(DateTime, default=datetime.datetime.now())
 
     sensor_id = Column(Integer, ForeignKey('Sensor.sensor_id'))
     sensor: Mapped["Sensor"] = relationship(back_populates="reads")

@@ -9,34 +9,61 @@ async function fetchData(model, id, amount) {
 
 // create new panel for specific device
 async function createPanel(model, id, title) {
+    function createButton() {
+        const newButton = document.createElement('button');
+        newButton.innerHTML = 'x';
+        newButton.addEventListener('mousedown', function(event) {
+            if (event.buttons === 1) {
+                newTable.remove();
+            }
+        });
+
+        return newButton;
+    }
+
+    function createTitle() {
+        const titleTR = document.createElement('tr');
+        const titleTH = document.createElement('th');
+        titleTH.innerHTML = title;
+
+        titleTR.className = 'tr-title';
+        titleTH.colSpan = data.length;
+        titleTR.appendChild(titleTH);
+
+        newButton = createButton();
+        titleTH.appendChild(newButton);
+
+        return titleTR;
+    }
+
+    function createDescription() {
+        const descTR = document.createElement('tr');
+        for (const read in data[0]) {
+            descTR.className = 'tr-desc';
+
+            const newTableTH = document.createElement('th');
+            const THTextNode = document.createTextNode(read);
+
+            newTableTH.appendChild(THTextNode);
+            descTR.appendChild(newTableTH);
+        }
+
+        return descTR;
+    }
+
     data = await fetchData(model, id);
 
     const newTable = document.createElement('table');
     newTable.setAttribute('id', 'table-'+model+'-'+id);
     initDragResize(newTable);
 
-    const titleTR = document.createElement('tr');
-    const titleTH = document.createElement('th');
-    titleTH.innerHTML = title;
-
-    titleTR.className = 'tr-title';
-    titleTH.colSpan = data.length;
-    titleTR.appendChild(titleTH);
+    titleTR = createTitle();
     newTable.appendChild(titleTR);
 
-    const descTR = document.createElement('tr');
-    for (const read in data[0]) {
-        descTR.className = 'tr-desc';
-
-        const newTableTH = document.createElement('th');
-        const THTextNode = document.createTextNode(read);
-
-        newTableTH.appendChild(THTextNode);
-        descTR.appendChild(newTableTH);
-    }
-
+    descTR = createDescription();
     newTable.appendChild(descTR);
 
+    // insert data
     for (const read in data) {
         const newTableTR = document.createElement('tr');
         for (const key in data[read]) {
@@ -51,6 +78,8 @@ async function createPanel(model, id, title) {
         newTable.appendChild(newTableTR);
       document.body.appendChild(newTable);
     }
+
+    
 }
 
 // create table rows

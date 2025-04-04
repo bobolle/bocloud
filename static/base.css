@@ -31,6 +31,12 @@ table::-webkit-scrollbar {
     width: 0px;
 }
 
+table button {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+}
+
 th {
     padding: 2px;
     border: 1px solid #707070;
