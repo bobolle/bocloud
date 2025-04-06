@@ -1,9 +1,9 @@
-const source = new EventSource('/stream');
+const source = new EventSource('/api/stream');
 const tableReads = document.getElementById('table-reads');
 
 // fetch data from model
 async function fetchData(model, id, amount) {
-    const response = await fetch(`/fetch/${model}?${id}`);
+    const response = await fetch(`/api/fetch/${model}?${id}`);
     return await response.json();
 }
 

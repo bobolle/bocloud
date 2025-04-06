@@ -23,7 +23,7 @@ def master(env, sr):
             # fetch data
             return response(sr, '200 OK', None, 'monitor.html')
         
-        if path == '/stream':
+        if path == '/api/stream':
             # get index of last read
             with Session(engine) as session:
                 index = lastReadIndex(session)
@@ -40,7 +40,7 @@ def master(env, sr):
 
             return b''
 
-        if path == '/fetch/device':
+        if path == '/api/fetch/device':
             device_id = env['QUERY_STRING']
             
             with Session(engine) as session:
@@ -62,7 +62,7 @@ def master(env, sr):
             return json.dumps(data).encode('utf-8')
 
         # fetch data from sensor
-        if path == '/fetch/sensor':
+        if path == '/api/fetch/sensor':
             sensor_id = env['QUERY_STRING']
             with Session(engine) as session:
                 reads = session.query(Read).filter(Read.sensor_id == sensor_id).all()
