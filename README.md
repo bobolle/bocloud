@@ -54,8 +54,8 @@ The goal is to create a lightweight cloud I can use for my other projects and to
 - [x] option for creating new table per device
 - [x] resize tables
 - [ ] control panel for device handling
-- [ ] when clicking on a device, add new panel to show reads from that device
-- [ ] add close button on panels
+- [x] when clicking on a device, add new panel to show reads from that device
+- [x] add close button on panels
 - [ ] status panel
 - [ ] sessions
 - [ ] show previous reads before session in stream panel?
