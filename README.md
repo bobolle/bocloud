@@ -14,6 +14,23 @@ Storing data happends on the /api/data POST request where the json data gets sto
 
 The main idea was to let the user decide how the interface would look like. From that idea I created a template with some table elements that you can resize and move however you like. The size and position get stored in localStorage and set on refresh.
 
+### API
+
+In order to publish data, send a POST request to /api/data with json data as:
+```
+{
+  "device_id": "",
+  "sensors": {
+    "sensortype_1": "",
+    "sensortype_2": ""
+  }
+}
+```
+
+In order to fetch device specific data, send a GET request to /api/fetch/device${model}?${id}.  
+In order to fetch sensor specific data, send a GET request to /api/fetch/sensor${model}?${id}.  
+In order to stream data, send a GET request to /api/stream.  
+
 ### Goals
 
 The goal is to create a lightweight cloud I can use for my other projects and to learn more about the architecture of a cloud.
