@@ -24,6 +24,7 @@ table {
     overflow: hidden;
     overflow-y: scroll;
     background-color: #202020;
+    border-radius: 10px 10px 10px 10px;
 }
 
 table::-webkit-scrollbar {
