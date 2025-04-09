@@ -1,5 +1,6 @@
 import uwsgi
 import json
+import jwt
 import time
 import os
 import sys
@@ -7,6 +8,8 @@ import sys
 sys.path.append(os.path.abspath('src'))
 from template import BoTemplate 
 from database import *
+
+secret = '44aa99ghghaa'
 
 def master(env, sr):
     path = env['PATH_INFO']
@@ -79,6 +82,21 @@ def master(env, sr):
             headers.append(('Content-Type', 'application/json'))
             sr('200 OK', headers)
             return json.dumps(data).encode('utf-8')
+
+        if path == '/gentoken':
+            token = jwt.encode({'user': 'test'}, secret, algorithm="HS256");
+            headers = []
+            headers.append(('Content-Type', 'application/json'))
+            sr('200 OK', headers)
+            return json.dumps(token).encode('utf-8')
+
+
+        if path == '/testtoken':
+            auth = env['HTTP_AUTHORIZATION']
+            token = auth.split(" ")[1]
+            print(jwt.decode(token, secret, algorithms=["HS256"]))
+
+            return response(sr, '200 OK', None, 'base.html')
 
         return response(sr, '404 Not Found', None, 'base.html')
 
