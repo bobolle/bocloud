@@ -19,7 +19,7 @@ def master(env, sr):
     # GET
     if request == 'GET':
         if path == '/':
-            return response(sr, '200 OK', None, 'base.html')
+            return response(sr, '200 OK', None, 'monitor.html')
 
         if path == '/monitor':
             # how to know what to query?
@@ -46,42 +46,25 @@ def master(env, sr):
         if path == '/api/fetch/device':
             device_id = env['QUERY_STRING']
             
-            with Session(engine) as session:
-                reads = session.query(Read).join(Sensor).filter(Sensor.device_id == device_id).all()
-                if reads:
-                    data = []
-                    for read in reads:
-                        data.append({
-                            'read_id': read.read_id,
-                            'value': read.value,
-                            'timestamp': read.timestamp.isoformat(),
-                            'sensor_type': read.sensor.sensor_type
-
-                        })
-
             headers = []
             headers.append(('Content-Type', 'application/json'))
             sr('200 OK', headers)
-            return json.dumps(data).encode('utf-8')
+
+            with Session(engine) as session:
+                data = getDeviceReads(session, device_id)
+                return json.dumps(data).encode('utf-8')
 
         # fetch data from sensor
         if path == '/api/fetch/sensor':
             sensor_id = env['QUERY_STRING']
-            with Session(engine) as session:
-                reads = session.query(Read).filter(Read.sensor_id == sensor_id).all()
-                if reads:
-                    data = []
-                    for read in reads:
-                        data.append({
-                            'read_id': read.read_id,
-                            'value': read.value,
-                            'timestamp': read.timestamp.isoformat()
-                        })
 
             headers = []
             headers.append(('Content-Type', 'application/json'))
             sr('200 OK', headers)
-            return json.dumps(data).encode('utf-8')
+
+            with Session(engine) as session:
+                data = getSensorReads(session, sensor_id)
+                return json.dumps(data).encode('utf-8')
 
         if path == '/gentoken':
             token = jwt.encode({'user': 'test'}, secret, algorithm="HS256");
