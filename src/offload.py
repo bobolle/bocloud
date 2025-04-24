@@ -30,7 +30,7 @@ def stream(env, sr):
                     index = new_read.read_id
                     new_read = None
                 else:
-                    time.sleep(1)
+                    uwsgi.async_sleep(1)
                     continue
 
     finally:
