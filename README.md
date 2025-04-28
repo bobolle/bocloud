@@ -62,7 +62,9 @@ The goal is to create a lightweight cloud I can use for my other projects and to
 
 ## Build
 ```
-#WIP
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 ```
 
 ## Run
