@@ -127,6 +127,7 @@ source.addEventListener('error', function(msg) {
 let latest = true;
 const buttonLatest = document.getElementById('button-latest');
 buttonLatest.addEventListener('mousedown', function(event) {
+    event.preventDefault();
     if (event.buttons == 1) {
         latest = !latest;
     }

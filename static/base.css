@@ -1,7 +1,17 @@
 * {
+    /*
     background-color:   #121212;
     color:              #EEEEEE;
+    */
 }
+
+body {
+    background-color:   #121212;
+    color:              #EEEEEE;
+    margin: 0;
+    padding: 0;
+}
+
 ::-webkit-scrollbar {
     width: 8px;
     background-color:   #121212;
@@ -24,7 +34,6 @@ table {
     overflow: hidden;
     overflow-y: scroll;
     background-color: #202020;
-    border-radius: 10px 10px 10px 10px;
 }
 
 table::-webkit-scrollbar {
@@ -62,9 +71,33 @@ td {
 
 button {
     color: #888888;
+    background-color:   #121212;
     font-weight: bold;
 }
 
 #button-latest {
+    color: #EEEEEE;
+}
+
+#nav-top {
+    padding: 4px;
+    border: 1px solid #707070;
+    background-color: #555555;
+}
+
+#nav-top div {
+    display: inline;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#nav-top .tab {
+    padding: 3px;
+    font-size: 18px;
+    background-color: #404040;
+}
+
+.tab a {
+    text-decoration: none;
     color: #EEEEEE;
 }
