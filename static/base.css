@@ -87,13 +87,13 @@ button {
 
 #nav-top div {
     display: inline;
-    font-size: 20px;
+    font-size: 17px;
     font-weight: bold;
 }
 
 #nav-top .tab {
     padding: 3px;
-    font-size: 18px;
+    font-size: 16px;
     background-color: #404040;
 }
 
