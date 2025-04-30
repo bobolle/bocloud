@@ -99,9 +99,9 @@ def master(env, sr):
 
                 with Session(engine) as session:
                     device = getDevice(session, device_name)
+
                     # new device
                     if not device:
-
                         # new device
                         new_device = createDevice(session, device_name)
 
@@ -117,20 +117,38 @@ def master(env, sr):
 
                         session.add(new_sensor)
                         session.add(new_read)
-
                         session.add(new_device)
+
                         session.commit()
 
                     # device already exists
                     else:
+                        # check if sensor is existing in device
+                        sensor_exists = False
                         for device_sensor in device.sensors:
+                            # if sensor already exists
                             if device_sensor.sensor_type == sensor_type:
+                                sensor_exists = True
                                 # create new read
                                 new_read = createRead(session, value)
                                 # append read to sensor
                                 device_sensor.reads.append(new_read)
 
                                 session.add(new_read)
+
+                        if sensor_exists == False:
+                            # create new sensor
+                            new_sensor = createSensor(session, sensor_type)
+                            # create new read
+                            new_read = createRead(session, value)
+
+                            # append read to sensor
+                            new_sensor.reads.append(new_read)
+                            # append sensor to device
+                            device.sensors.append(new_sensor)
+                            
+                            session.add(new_sensor)
+                            session.add(new_read)
 
                         session.commit()
 
