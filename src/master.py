@@ -92,17 +92,10 @@ def master(env, sr):
         if path == '/api/data':
             json_data = json.loads(data.decode())
 
-            # {
-            # "device_id": "pico_w_test",
-            # "sensors": {
-            #     "moist": 37,
-            #     "light": 368
-            # }
-            #}
-
             try: 
                 device_name = json_data['device_id']
-                sensors = json_data['sensors']
+                sensor_type = json_data['sensor_type']
+                value = json_data['value']
 
                 with Session(engine) as session:
                     device = getDevice(session, device_name)
@@ -112,19 +105,18 @@ def master(env, sr):
                         # new device
                         new_device = createDevice(session, device_name)
 
-                        for sensor_type, value in sensors.items():
-                            # create new sensor
-                            new_sensor = createSensor(session, sensor_type)
-                            # create new read
-                            new_read = createRead(session, value)
+                        # create new sensor
+                        new_sensor = createSensor(session, sensor_type)
+                        # create new read
+                        new_read = createRead(session, value)
 
-                            # append read to sensor
-                            new_sensor.reads.append(new_read)
-                            # append sensor to device
-                            new_device.sensors.append(new_sensor)
+                        # append read to sensor
+                        new_sensor.reads.append(new_read)
+                        # append sensor to device
+                        new_device.sensors.append(new_sensor)
 
-                            session.add(new_sensor)
-                            session.add(new_read)
+                        session.add(new_sensor)
+                        session.add(new_read)
 
                         session.add(new_device)
                         session.commit()
@@ -132,14 +124,13 @@ def master(env, sr):
                     # device already exists
                     else:
                         for device_sensor in device.sensors:
-                            for sensor_type, value in sensors.items():
-                                if device_sensor.sensor_type == sensor_type:
-                                    # create new read
-                                    new_read = createRead(session, value)
-                                    # append read to sensor
-                                    device_sensor.reads.append(new_read)
+                            if device_sensor.sensor_type == sensor_type:
+                                # create new read
+                                new_read = createRead(session, value)
+                                # append read to sensor
+                                device_sensor.reads.append(new_read)
 
-                                    session.add(new_read)
+                                session.add(new_read)
 
                         session.commit()
 
