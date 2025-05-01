@@ -20,10 +20,8 @@ In order to publish data, send a POST request to /api/data with json data as:
 ```
 {
   "device_id": "",
-  "sensors": {
-    "sensortype_1": "",
-    "sensortype_2": ""
-  }
+  "sensor_type": "",
+  "value": ""
 }
 ```
 
