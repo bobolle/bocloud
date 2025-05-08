@@ -155,7 +155,7 @@ def master(env, sr):
             except Exception as e:
                 print(e)
 
-            return response(sr, '200 OK')
+            return response(sr, '201 Created')
 
         return response(sr, '404 Not Found', None, 'base.html')
 
